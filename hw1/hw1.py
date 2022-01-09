@@ -9,7 +9,7 @@
 """
 
 # here put the import lib
-import timeit
+import time
 import os
 
 
@@ -18,8 +18,14 @@ def main():
     f = open('pi50.4.bin', 'rb')
     d_buff = f.read()
     s = ''.join(('%02x' % d for d in d_buff))
-    print(s)
+    goal = '14'
+    start = time.perf_counter()
+    n = s.index(goal)
+    end = time.perf_counter()
+    print(f'The position of the string is {n}. Time used is {end - start} sec')
     return 0
 
+
 if __name__ == '__main__':
+
     main()
