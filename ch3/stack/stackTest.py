@@ -103,7 +103,7 @@ def expressionConvert(expression):
             postfixlist.append(token)
         elif token == "(":
             opstack.push(token)
-        elif token  == ")":
+        elif token == ")":
             toptoken = opstack.pop()
             while toptoken != ')':
                 postfixlist.append(toptoken)

@@ -2,15 +2,14 @@
 # -*- coding: utf-8 -*-
 
 """
-@Time    : 3/1/2022 11:50 PM
+@Time    : 9/1/2022 11:37 PM
 @Author  : Zhaopeng SHI
 @Email   : zhaopshi@gmail.com
-@File    : unorderedlisttest.py
+@File    : orderedlist.py
 """
 
 
 # import package here
-
 class Node:
     def __init__(self, initdata):
         self.data = initdata
@@ -28,15 +27,31 @@ class Node:
     def setNext(self, newnext):
         self.next = newnext
 
-
-class UnorderedList:
+class OrderedList:
     def __init__(self):
         self.head = None
 
     def add(self, item):
         temp = Node(item)
-        temp.addNext(self.head)
-        self.head = temp
+        current = self.head
+        previous = None
+        stop = False
+        while current != None and not stop:
+            if current.getData() > item:
+                stop = True
+            else:
+                previous = current
+                current = current.getNext()
+            if previous == None:
+                temp.setNext(current)
+                self.head = temp
+            else:
+                temp.setNext(current)
+                previous.setNext(temp)
+
+
+
+
 
     def size(self):
         count = 0
@@ -49,11 +64,14 @@ class UnorderedList:
     def search(self, item):
         current = self.head
         found = False
-        while current != None and found == False:
+        stop = False
+        while current != None and found == False and not stop:
             if current.getData() == item:
                 found = True
             else:
                 current = current.getNext()
+            if current.getData() > item:
+                return False
 
         return found
 
@@ -71,12 +89,7 @@ class UnorderedList:
                 self.head = current.getNext()
         else:
                 previous.setNext(current.getNext())
-
-
 def main():
-
-    mylist = UnorderedList()
-    print(mylist.head)
     return 0
 
 
