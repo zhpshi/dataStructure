@@ -35,7 +35,7 @@ class UnorderedList:
 
     def add(self, item):
         temp = Node(item)
-        temp.addNext(self.head)
+        temp.setNext(self.head)
         self.head = temp
 
     def size(self):
