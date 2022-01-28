@@ -187,50 +187,38 @@ class DoublyLinkedList:
             return 'A DoublyLinkedList: %s' % (','.join(str(item) for item in temp_list))
         else:
             return 'An empty DoublyLinkedList'
+    __repr__ = __str__
     def __getitem__(self, n):
             if isinstance(n, slice):
-                try:
-                    slice_list = []
-                    if n.stop < 0 and n.start < 0:
-                        i = -1
-                        current = self.tail
-                        while i >= n.start:
-                            if i < n.stop:
-                                slice_list.append(current.getData())
-                            i -= 1
-                            current = current.getPrev()
-                        return slice_list.reverse()
-                    elif n.stop >= 0 and n.start >=0:
-                        i = 0
-                        current = self.head
-                        while i < n.stop:
-                            if i >= n.start:
-                                slice_list.append(current.getData())
-                            i += 1
-                            current = current.getNext()
-                        return slice_list
-                    else:
-                        return 'ERROR: The start and stop of your slice must be both < 0 or >=0'
+                start = 0 if n.start is None else n.start
+                stop = len(self) if n.stop is None else n.stop
+                step = 1 if n.step is None else n.step
+                current = self.head
+                i = 0
+                while i < start:
+                    current = current.getNext()
+                    i += 1
+                dcopy = DoublyLinkedList()
+                while i < stop:
+                    dcopy.append(current.getData())
+                    s = step
+                    while current is not None and s > 0:
+                        current = current.getNext()
+                        s -= 1
+                    i += step
 
-                except AttributeError:
-                    return "ERROR: Your slice out of the range of link."
+                return dcopy
+
             elif isinstance(n, int):
-                try:
-                    if n < 0:
-                        current = self.tail
-                        i = -1
-                        while i != n:
-                            i -= 1
-                            current = current.getPrev()
-                    else:
-                        current = self.head
-                        i = 0
-                        while i != n:
-                            i += 1
-                            current = current.getNext()
-                    return current.getData()
-                except AttributeError:
-                    return 'ERROR: The position is out of the range of the link.'
+                current = self.head
+                i =0
+                while i < n:
+                    current = current.getNext()
+                    i += 1
+                if current is not None:
+                    return current
+                else:
+                    raise StopIteration
             else:
                 return 'ERROR: Please input a slice or an integer.'
 
@@ -246,19 +234,16 @@ class DoublyLinkedList:
         raise StopIteration
 
     def __eq__(self, other):
-        flag = True
-        if type(self) == type(other):
-            checker1 = self.head
-            checker2 = other.head
-            while flag and (checker1 != None) and (checker2 != None):
-                if checker1.getData() != checker2.getData():
-                    flag = False
-                checker1 = checker1.getNext()
-                checker2 = checker2.getNext()
-            if flag and (checker1 == None) and (checker2 == None):
-                return True
-            else:
+        if other is None and isinstance(other, DoublyLinkedList):
+            return False
+        if len(other) != len(self):
+            return False
+        for s, o in zip(self, other):
+            if s != o:
                 return False
+        else:
+            return True
+
 
         else:
             return False
