@@ -43,30 +43,38 @@ class Node:
         self.prev = newprev
 
 class DoublyLinkedList:
-    def __init__(self, iterable=[]):
-        try:
-            if iterable == []:
-                self.head = None
-                self.tail = None
-            elif isinstance(iterable, list):
-                self.head = Node(iterable[0])
-                for i in range(1, len(iterable)):
-                    temp = Node(iterable[i])
-                    temp.setNext(self.head)
-                    self.head.setPrev(temp)
-                    self.head = temp
+    def __init__(self, iterable=None):
+        self.head = None
+        self.tail = None
+        self.marker = self.head
+        if iterable != None:
+            try:
+                if isinstance(iterable, list):
+                    if len(iterable) == 0:
+                        self.head = None
+                        self.tail = None
+                    elif len(iterable) == 1:
+                        self.head = Node(iterable[0])
+                        self.tail = self.head
+                    else:
+                        self.head = Node(iterable[0])
+                        self.tail = Node(iterable[1])
+                        self.head.setNext(self.tail)
+                        self.tail.setPrev(self.head)
+                        for i in range(2, len(iterable)):
+                            temp = Node(iterable[i])
+                            temp.setPrev(self.tail)
+                            self.tail.setNext(temp)
+                            self.tail = self.tail.getNext()
 
-            else:
-                self.head = Node(iterable)
-                self.tail = self.head
-        except:
-            print('Error: the parameter must be list, number, string.')
+                else:
+                    self.head = Node(iterable)
+                    self.tail = self.head
+            except:
+                print('Error: if you input the parameter, it must be a nonempty list or number or string.')
     
     def getTail(self):
-        temp = self.head
-        while temp.getNext() != None:
-            temp = temp.getNext()
-        return temp
+        return self.tail
     
     def isEmpty(self):
         return self.head == None
@@ -120,13 +128,11 @@ class DoublyLinkedList:
         temp = Node(item) 
         if self.head == None:
             self.head = temp
+            self.tail = self.head
         else:
-            flag = self.head
-            while flag.getNext() != None:
-                flag = flag.getNext()
-            temp.setPrev(flag)
-            flag.setNext(temp)
-
+            temp.setPrev(self.tail)
+            self.tail.setNext(temp)
+            self.tail = temp
     def index(self, item):
         index_list = []
         current = self.head
@@ -139,10 +145,10 @@ class DoublyLinkedList:
 
         return index_list
     def pop(self):
-        old_head = self.head
-        self.head = old_head.getNext()
-        self.head.setPrev(None)
-        return old_head.getData()
+        old_tail = self.tail
+        self.tail = old_tail.getPrev()
+        self.tail.setNext(None)
+        return old_tail.getData()
 
     def insert(self, pos, item):
         temp = Node(item)
@@ -185,36 +191,91 @@ class DoublyLinkedList:
             if isinstance(n, slice):
                 try:
                     slice_list = []
-                    i = 0
-                    current = self.head
-                    while i <= n.stop:
-                        if i >= n.start:
-                            slice_list.append(current.getData())
-                        i += 1
-                        current = current.getNext()
-                    return slice_list
+                    if n.stop < 0 and n.start < 0:
+                        i = -1
+                        current = self.tail
+                        while i >= n.start:
+                            if i < n.stop:
+                                slice_list.append(current.getData())
+                            i -= 1
+                            current = current.getPrev()
+                        return slice_list.reverse()
+                    elif n.stop >= 0 and n.start >=0:
+                        i = 0
+                        current = self.head
+                        while i < n.stop:
+                            if i >= n.start:
+                                slice_list.append(current.getData())
+                            i += 1
+                            current = current.getNext()
+                        return slice_list
+                    else:
+                        return 'ERROR: The start and stop of your slice must be both < 0 or >=0'
+
                 except AttributeError:
                     return "ERROR: Your slice out of the range of link."
             elif isinstance(n, int):
                 try:
-                    current = self.head
-                    i = 0
-                    while i != n:
-                        i += 1
-                        current = current.getNext()
+                    if n < 0:
+                        current = self.tail
+                        i = -1
+                        while i != n:
+                            i -= 1
+                            current = current.getPrev()
+                    else:
+                        current = self.head
+                        i = 0
+                        while i != n:
+                            i += 1
+                            current = current.getNext()
                     return current.getData()
                 except AttributeError:
                     return 'ERROR: The position is out of the range of the link.'
             else:
                 return 'ERROR: Please input a slice or an integer.'
+
+    def __iter__(self):
+        self.marker = self.head
+        return self
+
+    def __next__(self):
+        while self.marker != None:
+            current = self.marker
+            self.marker = self.marker.getNext()
+            return current
+        raise StopIteration
+
+    def __eq__(self, other):
+        flag = True
+        if type(self) == type(other):
+            checker1 = self.head
+            checker2 = other.head
+            while flag and (checker1 != None) and (checker2 != None):
+                if checker1.getData() != checker2.getData():
+                    flag = False
+                checker1 = checker1.getNext()
+                checker2 = checker2.getNext()
+            if flag and (checker1 == None) and (checker2 == None):
+                return True
+            else:
+                return False
+
+        else:
+            return False
 def main():
-    t = DoublyLinkedList([1,2])
-    print(t)
-    t.add(1)
-    t.add(2)
-    t.insert(2,2)
-    print(t)
-    print(t[1:9])
+    f = [1, 2, 3, 4, 5, 6]
+    g = [1, 2, 3, 4, 5]
+    t = DoublyLinkedList(f)
+    h = DoublyLinkedList(g)
+    print(t == h)
+    #for i in t:
+    #    print(i.getData())
+    #print(t.head.getData())
+    #t.add(1)
+    #t.add(2)
+    #t.insert(2,2)
+    #print(t)
+    #print(t[-2])
     #print(t.getNext())
 
     return 0
