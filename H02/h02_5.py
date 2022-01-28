@@ -243,10 +243,6 @@ class DoublyLinkedList:
                 return False
         else:
             return True
-
-
-        else:
-            return False
 def main():
     f = [1, 2, 3, 4, 5, 6]
     g = [1, 2, 3, 4, 5]
