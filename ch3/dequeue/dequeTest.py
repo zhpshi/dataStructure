@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''
+"""
 @Time    : 2021/12/13 23:32:51
 @Author  : Zhaopeng SHI
 @Email   : zhaopshi@gmail.com
 @File    : dequeTest.py
-'''
+"""
 
 # here put the import lib
 import numpy as np

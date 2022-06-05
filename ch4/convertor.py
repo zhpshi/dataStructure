@@ -10,14 +10,18 @@
 
 
 # import package here
+
+
 def toStr(n, base):
     converString = "0123456789ABCDEF"
     if n < base:
         return converString[n]
     else:
         return toStr(n // base, base) + converString[n % base]
+
+
 def main():
-    print(toStr(345, 2))
+    print(toStr(3452, 16))
     return 0
 
 
